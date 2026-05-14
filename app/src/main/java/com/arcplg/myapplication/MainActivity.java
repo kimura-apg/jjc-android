@@ -44,12 +44,10 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action!!!!!!!", Snackbar.LENGTH_LONG)
                         .setAnchorView(R.id.fab)
                         .setAction("Action", null).show();
-
-                finish();
             }
         });
     }
-
+    
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
