@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/MemoFragment"
         android:name="com.arcplg.myapplication.MemoFragment"
-        android:label="@string/first_fragment_label"
+        android:label="@string/memo_fragment_label"
         tools:layout="@layout/fragment_memo_list">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            app:destination="@id/AddMemoFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.arcplg.myapplication.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/AddMemoFragment"
+        android:name="com.arcplg.myapplication.AddMemoFragment"
+        android:label="@string/add_memo_fragment_label"
+        tools:layout="@layout/fragment_add_memo">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"

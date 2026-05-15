@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    private NavHostFragment navHostFragment;
+    private  NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
 
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
 
         if (navHostFragment != null ){
-            NavController navController = navHostFragment.getNavController();
+            navController = navHostFragment.getNavController();
             appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         }
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+                navController.navigate(R.id.AddMemoFragment);
             }
         });
     }
