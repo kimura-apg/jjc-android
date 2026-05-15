@@ -26,6 +26,7 @@ public class MemoFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
+    private DatabaseHelper dbHelper;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -50,15 +51,26 @@ public class MemoFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
+        dbHelper = new DatabaseHelper(getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_memo_list, container, false);
+        var listFromDB = new ArrayList<PlaceholderContent.PlaceholderItem>();
 
-        ArrayList<PlaceholderContent.PlaceholderItem> itemList = new ArrayList<>();
-         itemList.add(new PlaceholderContent.PlaceholderItem("1", "title1", "detail1"));
+        if (dbHelper != null) {
+            var db = dbHelper.getReadableDatabase();
+            var cursor = db.query("memo", null, null, null, null, null, null);
+
+            while (cursor.moveToNext()) {
+                var content = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                listFromDB.add(new PlaceholderContent.PlaceholderItem("1", content, ""));
+            }
+            cursor.close();
+        }
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -69,7 +81,7 @@ public class MemoFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(itemList));
+            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(listFromDB));
         }
         return view;
     }
