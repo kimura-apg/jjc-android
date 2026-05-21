@@ -33,6 +33,10 @@ public class AddMemoFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private FragmentAddMemoBinding binding;
+    private String inputTitle;
+    private String inputDetail;
+    private DatabaseHelper dbHelper;
+
 
     public AddMemoFragment() {
         // Required empty public constructor
@@ -69,6 +73,7 @@ public class AddMemoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentAddMemoBinding.inflate(inflater, container, false);
+        dbHelper = new DatabaseHelper(getContext());
 
         return binding.getRoot();
 //        return inflater.inflate(R.layout.fragment_add_memo, container, false);
@@ -79,30 +84,57 @@ public class AddMemoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.addMemoButton.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "メモを追加しました", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), inputTitle, Toast.LENGTH_SHORT).show();
+
+            if (dbHelper != null) {
+                var db = dbHelper.getReadableDatabase();
+
+                db.insert("memo", null, null);
+            }
         });
 
         binding.titleInput.addTextChangedListener(new TextWatcher() {
             // 文字が変更される前
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-                Log.d("text", "beforeTextChanged: " + charSequence.toString());
-
+                Log.d("text", "beforeTextChanged:");
+                Log.d("text", charSequence.toString());
+                Log.d("text", String.valueOf(start));
+                Log.d("text", String.valueOf(count));
+                Log.d("text", String.valueOf(after));
             }
 
             // 文字が変更された瞬間
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-
+                Log.d("text", "onTextChanged:");
+                Log.d("text", charSequence.toString());
+                Log.d("text", String.valueOf(start));
+                Log.d("text", String.valueOf(before));
+                Log.d("text", String.valueOf(count));
             }
 
             // 文字が変更された後
             @Override
             public void afterTextChanged(Editable editable) {
+                Log.d("text", "afterTextChanged:");
+                Log.d("text", editable.toString());
 
+                inputTitle = editable.toString();
             }
+        });
 
+        binding.detailInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                inputDetail = editable.toString();
+            }
         });
     }
 
