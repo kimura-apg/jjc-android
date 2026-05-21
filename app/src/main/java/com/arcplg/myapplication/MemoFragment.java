@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,8 +65,10 @@ public class MemoFragment extends Fragment {
             var cursor = db.query("memo", null, null, null, null, null, null);
 
             while (cursor.moveToNext()) {
-                var content = cursor.getString(cursor.getColumnIndexOrThrow("title"));
-                listFromDB.add(new PlaceholderContent.PlaceholderItem("1", content, ""));
+                var id = cursor.getString(cursor.getColumnIndexOrThrow("id"));
+                var title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+
+                listFromDB.add(new PlaceholderContent.PlaceholderItem(id, title, ""));
             }
             cursor.close();
         }

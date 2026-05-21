@@ -2,11 +2,20 @@ package com.arcplg.myapplication;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.arcplg.myapplication.databinding.FragmentAddMemoBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +32,7 @@ public class AddMemoFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private FragmentAddMemoBinding binding;
 
     public AddMemoFragment() {
         // Required empty public constructor
@@ -58,7 +68,48 @@ public class AddMemoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_memo, container, false);
+        binding = FragmentAddMemoBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
+//        return inflater.inflate(R.layout.fragment_add_memo, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        binding.addMemoButton.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "メモを追加しました", Toast.LENGTH_SHORT).show();
+        });
+
+        binding.titleInput.addTextChangedListener(new TextWatcher() {
+            // 文字が変更される前
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                Log.d("text", "beforeTextChanged: " + charSequence.toString());
+
+            }
+
+            // 文字が変更された瞬間
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+
+            }
+
+            // 文字が変更された後
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+
+
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        binding = null;
     }
 }
