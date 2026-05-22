@@ -1,7 +1,9 @@
 package com.arcplg.myapplication;
 
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +38,15 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).id);
         holder.mContentView.setText(mValues.get(position).content);
+
+        holder.itemView.setOnClickListener(v -> {
+            var tappedItemId = holder.mItem.id;
+            var bundle = new Bundle();
+
+            bundle.putString("id", tappedItemId);
+
+            Navigation.findNavController(v).navigate(R.id.action_MemoFragment_to_memoDetailFragment);
+        });
     }
 
     @Override

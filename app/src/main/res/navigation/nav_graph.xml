@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/AddMemoFragment" />
+        <action
+            android:id="@+id/action_MemoFragment_to_memoDetailFragment"
+            app:destination="@id/memoDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/AddMemoFragment"
@@ -23,6 +26,15 @@
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/MemoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/memoDetailFragment"
+        android:name="com.arcplg.myapplication.MemoDetailFragment"
+        android:label="fragment_memo_detail"
+        tools:layout="@layout/fragment_memo_detail" >
+        <action
+            android:id="@+id/action_memoDetailFragment_to_MemoFragment"
             app:destination="@id/MemoFragment" />
     </fragment>
 </navigation>
