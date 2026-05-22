@@ -1,5 +1,6 @@
 package com.arcplg.myapplication;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.arcplg.myapplication.databinding.FragmentAddMemoBinding;
@@ -84,12 +84,34 @@ public class AddMemoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.addMemoButton.setOnClickListener(v -> {
-            Toast.makeText(getContext(), inputTitle, Toast.LENGTH_SHORT).show();
+            var isInputted = inputTitle != null && inputDetail != null;;
 
-            if (dbHelper != null) {
+            if (dbHelper != null && isInputted) {
                 var db = dbHelper.getReadableDatabase();
+                var values = new ContentValues();
 
-                db.insert("memo", null, null);
+                values.put("title", inputTitle);
+                values.put("detail", inputDetail);
+                values.put("created_at", System.currentTimeMillis() / 1000L);
+
+                db.insert("memo", null, values);
+
+                Toast.makeText(getContext(), "保存しました。", Toast.LENGTH_SHORT).show();
+            } else {
+                if (inputDetail == null && inputTitle == null) {
+                    binding.detailInput.setError("本文を入力してください");
+                    binding.titleInput.setError("タイトルを入力してください");
+
+                    Toast.makeText(getContext(), "タイトルと本文を入力してください。", Toast.LENGTH_SHORT).show();
+                } else if (inputDetail == null) {
+                    binding.detailInput.setError("本文を入力してください");
+
+                    Toast.makeText(getContext(), "本文を入力してください。", Toast.LENGTH_SHORT).show();
+                } else if (inputTitle == null) {
+                    binding.titleInput.setError("タイトルを入力してください");
+
+                    Toast.makeText(getContext(), "タイトルを入力してください。", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
