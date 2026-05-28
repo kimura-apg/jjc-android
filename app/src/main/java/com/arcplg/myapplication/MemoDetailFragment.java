@@ -1,7 +1,9 @@
 package com.arcplg.myapplication;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 
+import androidx.annotation.ContentView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -9,8 +11,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.arcplg.myapplication.databinding.FragmentMemoDetailBinding;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,9 +100,34 @@ public class MemoDetailFragment extends Fragment {
                     createdAt = cursor.getString(cursor.getColumnIndexOrThrow("created_at"));
                 }
 
+                var readableDateString = Instant.ofEpochSecond(Long.parseLong(createdAt)).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm:ss"));
+
                 binding.titleInput.setText(title);
                 binding.detailInput.setText(detail);
-                binding.createdAtText.setText(createdAt);
+                binding.createdAtText.setText(readableDateString);
+
+                binding.saveButton.setOnClickListener(v -> {
+                    var editableTitle = binding.titleInput.getText();
+                    var editableDetail = binding.detailInput.getText();
+
+                    if (editableDetail == null) {
+                        binding.detailInput.setError("本文を入力してください");
+                    }
+                    if (editableTitle == null) {
+                        binding.titleInput.setError("タイトルを入力してください");
+                    }
+
+                    if (editableTitle != null && editableDetail != null) {
+                        var values = new ContentValues();
+
+                        values.put("title", editableTitle.toString());
+                        values.put("detail", editableDetail.toString());
+
+                        db.update("memo",values, "id = ?", new String[]{id});
+
+                        Toast.makeText(getContext(), "保存しました", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
     }
