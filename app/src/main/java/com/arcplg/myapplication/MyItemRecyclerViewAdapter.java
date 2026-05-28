@@ -4,6 +4,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
             bundle.putString("id", tappedItemId);
 
-            Navigation.findNavController(v).navigate(R.id.action_MemoFragment_to_memoDetailFragment);
+            Navigation.findNavController(v).navigate(R.id.action_MemoFragment_to_memoDetailFragment, bundle);
         });
     }
 

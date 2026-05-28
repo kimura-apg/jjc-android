@@ -64,8 +64,9 @@ public class MemoDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_memo_detail, container, false);
+        binding = FragmentMemoDetailBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
     }
 
     @Override
@@ -74,6 +75,7 @@ public class MemoDetailFragment extends Fragment {
 
         String title = "";
         String detail = "";
+        String createdAt = "";
 
         var args = getArguments();
         var dbHelper = new DatabaseHelper(getContext());
@@ -83,15 +85,17 @@ public class MemoDetailFragment extends Fragment {
             var id = args.getString("id");
 
             if (id != null) {
-                var cursor = db.query("memo", null, null, null, null, null, null);
+                var cursor = db.query("memo", null, "id = ?", new String[]{id}, null, null, null);
 
                 if (cursor.moveToFirst()) {
                     title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                     detail = cursor.getString(cursor.getColumnIndexOrThrow("detail"));
+                    createdAt = cursor.getString(cursor.getColumnIndexOrThrow("created_at"));
                 }
 
                 binding.titleInput.setText(title);
                 binding.detailInput.setText(detail);
+                binding.createdAtText.setText(createdAt);
             }
         }
     }
