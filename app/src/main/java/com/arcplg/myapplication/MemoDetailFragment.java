@@ -1,6 +1,8 @@
 package com.arcplg.myapplication;
 
 import android.content.ContentValues;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.ContentView;
@@ -8,6 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,6 +109,31 @@ public class MemoDetailFragment extends Fragment {
                 var readableDateString = Instant.ofEpochSecond(Long.parseLong(createdAt)).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm:ss"));
 
                 binding.titleInput.setText(title);
+
+                var spannableString = new SpannableString(detail);
+                var matcher = Patterns.WEB_URL.matcher(detail);
+
+                while (matcher.find()) {
+                    String foundUrl = matcher.group();
+                    int start = matcher.start();
+                    int end = matcher.end();
+
+                    var clickableSpan = new ClickableSpan() {
+                        @Override
+                        public void onClick(@NonNull View view) {
+                            Uri uri = Uri.parse(foundUrl);
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void updateDrawState(@NonNull TextPaint ds) {
+                            super.updateDrawState(ds);
+                        }
+                    };
+                }
+
                 binding.detailInput.setText(detail);
                 binding.createdAtText.setText(readableDateString);
 
