@@ -2,10 +2,14 @@ package com.arcplg.myapplication;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -15,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.arcplg.myapplication.placeholder.PlaceholderContent;
 import com.google.android.material.snackbar.Snackbar;
@@ -92,7 +95,10 @@ public class MemoFragment extends Fragment {
 
             recyclerView.setAdapter(new MyItemRecyclerViewAdapter(listFromDB));
 
-            var swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            var swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                final ColorDrawable background = new ColorDrawable(Color.RED);
+                final Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.icon_delete);
+
                 @Override
                 public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                     return false;
@@ -131,6 +137,40 @@ public class MemoFragment extends Fragment {
                             recyclerView.getAdapter().notifyItemInserted(position);
                         }
                     }).show();
+                }
+
+                @Override
+                public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                    View itemView = viewHolder.itemView;
+                    int itemHeight = itemView.getBottom() - itemView.getTop();
+
+                    // dXが0未満 → 左方向の移動のみ
+                    if (dX < 0) {
+                        c.clipRect(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+
+                        background.setBounds(
+                                itemView.getRight() + (int) dX,
+                                itemView.getTop(),
+                                itemView.getRight(),
+                                itemView.getBottom()
+                        );
+                        background.draw(c);
+
+                        if (icon != null) {
+                            int iconWidth = icon.getIntrinsicWidth();
+                            int iconHeight = icon.getIntrinsicHeight();
+
+                            int iconLeft = itemView.getRight() - (itemHeight - iconHeight) / 2 - iconWidth;
+                            int iconTop = itemView.getTop() + (itemHeight - iconHeight) / 2;
+                            int iconRight = itemView.getRight() - (itemHeight - iconHeight) / 2;
+                            int iconBottom = iconTop + iconHeight;
+
+                            icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+                            icon.draw(c);
+                         }
+                    }
+
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }
             };
 
