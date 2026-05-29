@@ -2,6 +2,7 @@ package com.arcplg.myapplication;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -91,7 +92,7 @@ public class MemoFragment extends Fragment {
 
             recyclerView.setAdapter(new MyItemRecyclerViewAdapter(listFromDB));
 
-            ItemTouchHelper.SimpleCallback swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            var swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
                 @Override
                 public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                     return false;
@@ -105,10 +106,14 @@ public class MemoFragment extends Fragment {
                     if (dbHelper != null) {
                         var db = dbHelper.getWritableDatabase();
 
-                        db.delete("memo", "id =?", new String[]{itemToDelete.id});
+                        db.delete("memo", "id = ?", new String[]{itemToDelete.id});
 
                         listFromDB.remove(position);
-                        recyclerView.getAdapter().notifyItemRemoved(position);
+                        var recyclerViewAdapter = recyclerView.getAdapter();
+
+                        if (recyclerViewAdapter != null) {
+                            recyclerViewAdapter.notifyItemRemoved(position);
+                        }
                     }
 
                     Snackbar.make(view, "削除しました", Snackbar.LENGTH_LONG).setAction("元に戻す", v -> {
